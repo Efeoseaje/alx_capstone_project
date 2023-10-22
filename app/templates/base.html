@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Macondo+Swash+Caps&family=Source+Sans+3:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca&family=Source+Sans+3:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+</head>
+<body>
+    <header class="header">
+        <img class="notification-icon" src="{{ url_for('static', filename='icons/bell.png') }}" alt="Bell icon">
+        <img class="profile-icon" src="{{ url_for('static', filename='icons/profile.png') }}" alt="Profile icon">
+        <div class="profile-dropdown">
+            <a href="{{ url_for('profile') }}" class="profile-dropdown-item">Profile</a>
+            <a href="{{ url_for('settings') }}" class="profile-dropdown-item">Settings</a>
+        </div>
+    </header>
+    <div class="navbar">
+        <a href="{{ url_for('home', username=username) }}">
+            <span class="icon">
+                <img src="{{ url_for('static', filename='icons/home.png') }}" alt="Dashboard Icon">
+            </span>
+            Dashboard</a>
+        <a href="{{ url_for('events') }}">
+            <span class="icon">
+                <img src="{{ url_for('static', filename='icons/calendar.png') }}" alt="Dashboard Icon">
+            </span>
+            Events</a>
+        <a href="{{ url_for('login') }}">
+            <span class="icon">
+                <img src="{{ url_for('static', filename='icons/logout.png') }}" alt="Dashboard Icon">
+            </span>
+            Logout</a>
+    </div>
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block overlay %}{% endblock %}
+
+    {% block overlay_alert %}{% endblock %}
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+</body>
+</html>
