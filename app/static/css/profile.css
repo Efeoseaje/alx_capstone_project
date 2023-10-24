@@ -1,0 +1,20 @@
+.content {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 50vh; 
+    width: 100%;
+}
+
+.profile {
+    width: 300px;
+    height: 200px;
+    padding: 20px; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); 
+    background-color: lemonchiffo; 
+}
+
+h2, p{
+    font-family: 'Poppins', sans-serif;
+}
