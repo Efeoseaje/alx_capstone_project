@@ -83,8 +83,9 @@ def create_event():
 
 @app.route('/get_events', methods=['GET'])
 def get_events():
+    user_id = current_user.id
     # Query the database to retrieve the events
-    events = Event.query.all()
+    events = Event.query.filter(Event.user_id == user_id).all()
 
     # Convert the retrieved events to a JSON-serializable format
     event_data = [{
