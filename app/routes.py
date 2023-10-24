@@ -1,8 +1,9 @@
-from flask import render_template, request, url_for, redirect, flash, jsonify
-from app import app, salt, bcrypt, session
+from flask import render_template, request, url_for, redirect, flash, jsonify, json
+from app import app, db, bcrypt
 from app.forms import SignupForm, LoginForm
 from app.models import User, Event
 from datetime import datetime
+from flask_login import login_user, current_user, logout_user
 
 
 @app.route("/home/")
@@ -14,8 +15,9 @@ def home():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = session.query(User).filter_by(user_email=form.user_email.data).first()
-        if user and bcrypt.checkpw(form.user_password.data.encode('utf-8'), user.user_password.encode('utf-8')):
+        user = User.query.filter_by(user_email=form.user_email.data).first() # check if email is in database
+        if user and bcrypt.check_password_hash(user.user_password, form.user_password.data):
+            login_user(user)
             flash(f'You have been logged in!', 'success')
             return redirect(url_for('home'))
         else:
@@ -27,10 +29,10 @@ def login():
 def signup():
     form = SignupForm()
     if form.validate_on_submit():
-        hashed_password = bcrypt.hashpw(form.user_password.data.encode('utf-8'), salt)
-        new_user = User(user_name=form.user_name.data, user_email=form.user_email.data, user_password=hashed_password, first_name=form.first_name.data, last_name=form.last_name.data)
-        session.add(new_user)
-        session.commit()
+        hashed_password = bcrypt.generate_password_hash(form.user_password.data).decode('utf-8')
+        user = User(first_name=form.first_name.data, last_name=form.last_name.data, user_name=form.user_name.data, user_email=form.user_email.data, user_password=hashed_password)
+        db.session.add(user)
+        db.session.commit()
         flash(f'Your Account has been created!', 'success')
         return redirect(url_for('home'))
     return render_template('signup.html', form=form)
@@ -51,6 +53,12 @@ def settings():
     return render_template('settings.html')
 
 
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
+
 @app.route('/create_event', methods=['POST'])
 def create_event():
     data = request.get_json()
@@ -60,15 +68,30 @@ def create_event():
     description = data['description']
 
     # Format the date and time strings
-    formatted_start = datetime.strptime(start, '%Y-%m-%dT%H:%M:%S.%fZ').strftime('%Y-%m-%d %H:%M:%S')
-    formatted_end = datetime.strptime(end, '%Y-%m-%dT%H:%M:%S.%fZ').strftime('%Y-%m-%d %H:%M:%S')
+    formatted_start = datetime.strptime(start, '%Y-%m-%dT%H:%M:%S.%fZ')
+    formatted_end = datetime.strptime(end, '%Y-%m-%dT%H:%M:%S.%fZ')
+
+    user_id = current_user.id
 
     # Create a new Event object
-    print('about to')
     new_event = Event(title=title, start=formatted_start, end=formatted_end, description=description, user_id=user_id)
     # Add the event to the session and commit it to the database
-    session.add(new_event)
-    session.commit()
-    session.close()
-    print('success')
-    return jsonify({'message': 'Event created successfully'})
+    db.session.add(new_event)
+    db.session.commit()
+    return jsonify('Success')
+
+
+@app.route('/get_events', methods=['GET'])
+def get_events():
+    # Query the database to retrieve the events
+    events = Event.query.all()
+
+    # Convert the retrieved events to a JSON-serializable format
+    event_data = [{
+        'title': event.title,
+        'start': event.start.isoformat(),
+        'end': event.end.isoformat(),
+        'description': event.description
+    } for event in events]
+
+    return jsonify(event_data)
