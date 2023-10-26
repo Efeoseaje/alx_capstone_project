@@ -40,7 +40,22 @@ def signup():
 
 @app.route('/events')
 def events():
-    return render_template('events.html', title='Events', content_title="All Events")
+    user_id = current_user.id
+    # Query the database to retrieve the events
+    events = Event.query.filter(Event.user_id == user_id).all()
+    
+    # Convert the retrieved events to a JSON-serializable format
+    event_data = [{
+        'id': event.id,
+        'title': event.title,
+        'start': event.start.strftime('%B %d, %Y %I:%M %p'),
+        'end': event.end.strftime('%B %d, %Y %I:%M %p'),
+        'description': event.description
+    } for event in events]
+    
+    html_response = render_template('events.html', event_data=event_data)
+    return html_response
+    # return render_template('events.html', title='Events', content_title="All Events")
 
 
 @app.route('/profile')
@@ -86,7 +101,7 @@ def get_events():
     user_id = current_user.id
     # Query the database to retrieve the events
     events = Event.query.filter(Event.user_id == user_id).all()
-
+    
     # Convert the retrieved events to a JSON-serializable format
     event_data = [{
         'title': event.title,
@@ -94,5 +109,79 @@ def get_events():
         'end': event.end.isoformat(),
         'description': event.description
     } for event in events]
-
+    
     return jsonify(event_data)
+
+
+@app.route('/delete_event/<int:event_id>', methods=['GET'])
+def delete_event(event_id):
+    # Query the database to find the event by its ID
+    event = Event.query.get(event_id)
+
+    if event is None:
+        # If the event doesn't exist, return an error response
+        return jsonify({'message': 'Event not found'}), 404
+
+    # Delete the event from the database
+    db.session.delete(event)
+    db.session.commit()
+
+    flash('Event deleted successfully!', 'success')
+
+     # Retrieve the updated event data after deletion
+    user_id = current_user.id
+    events = Event.query.filter(Event.user_id == user_id).all()
+    
+    # Convert the retrieved events to a JSON-serializable format
+    event_data = [{
+        'title': event.title,
+        'start': event.start.strftime('%B %d, %Y %I:%M %p'),
+        'end': event.end.strftime('%B %d, %Y %I:%M %p'),
+        'description': event.description
+    } for event in events]
+
+    return redirect(url_for('events'))
+
+
+@app.route('/update_event/<int:event_id>', methods=['GET'])
+def update_event(event_id):
+    # Query the database to find the event by its ID
+    event = Event.query.get(event_id)
+
+    if event is None:
+        # If the event doesn't exist, you can handle it as needed (e.g., show an error message)
+        flash('Event not found', 'danger')
+        return redirect(url_for('events'))
+
+    return render_template('update_event.html', event=event)
+
+
+@app.route('/update_eventForm', methods=['POST'])
+def update_eventForm():
+    event_id = request.form.get('event_id')
+    new_title = request.form.get('eventTitle')
+    new_start = request.form.get('eventStartDate')
+    new_end = request.form.get('eventEndDate')
+    new_description = request.form.get('eventDescription')
+
+     # Convert the date and time strings to Python datetime objects
+    formatted_start = datetime.strptime(new_start, '%Y-%m-%d %H:%M:%S')
+    formatted_end = datetime.strptime(new_end, '%Y-%m-%d %H:%M:%S')
+
+    # Retrieve the event by ID
+    event = Event.query.get(event_id)
+
+    if event:
+        # Update the event data
+        event.title = new_title
+        event.start = formatted_start
+        event.end = formatted_end
+        event.description = new_description
+
+        # Commit the changes to the database
+        db.session.commit()
+        flash('Event updated successfully', 'success')
+        return redirect(url_for('events'))
+
+    flash('Event not found', 'danger')
+    return redirect(url_for('events'))

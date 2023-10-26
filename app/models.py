@@ -20,9 +20,6 @@ class User(db.Model, UserMixin):
     # Define a relationship to link User to Event
     events = db.relationship('Event', backref='author', lazy=True)
 
-    def __repr__(self):
-        return f"User('{self.user_name}', '{self.user_email}', '{self.image_file}')"
-
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,6 +28,3 @@ class Event(db.Model):
     end = db.Column(db.DateTime, nullable=False)
     description = db.Column(db.String(120), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
-    def __repr__(self):
-        return f"Event('{self.title}', '{self.start}', '{self.end}', '{self.description}')"
