@@ -41,6 +41,10 @@ The following are some of the importance of this application:
 - Dashboard
 ![Alt text](<Dashboard Page.png>)
 
+- Events Page
+![Alt text](<Events Page.png>)
+
+
 <h1>Project Workflow</h1>
 
 ![Alt text](<App Workflow.png>)
