@@ -1,0 +1,61 @@
+#eventDisplay {
+    height: 115vh;
+    flex-grow: 1;
+    padding: 20px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 10px; 
+}
+
+.card {
+    background-color: lemonchiffon;
+    border: 1px solid #224957;
+    width: 320px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); 
+    padding: 5px;
+    border-radius: 10px;
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
+.card-body {
+    padding: 5px;
+}
+
+.card-body h4 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.btn-group {
+    display: flex;
+    gap: 10px; 
+    /* flex-grow: 1; */
+    height: 25px;
+    border-radius: 5px;
+    justify-content: space-around;
+}
+
+#button1, #button2 {
+    flex-grow: 1;
+    height: 25px;
+    width: 100px;
+    border-radius: 5px;
+}
+
+.btn-danger {
+    background-color: rgb(212, 62, 62);
+    color: aliceblue;
+    border: none;
+}
+
+.btn-update {
+    background-color: green;
+    color: aliceblue;
+    border: none;
+}

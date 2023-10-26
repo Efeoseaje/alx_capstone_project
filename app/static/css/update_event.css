@@ -1,0 +1,61 @@
+#updateEvent {
+    border: 1px solid red;
+    display: flex;
+    flex-grow: 1;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+.updateEvent-group {
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    margin: 0 auto;
+    width: 400px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.form .form-group {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+}
+
+.form label {
+    text-align: left;
+}
+
+.btn-updated {
+    display: flex;
+    justify-content: space-around;
+}
+
+.btn-2 {
+background-color: green;
+box-shadow: none;
+color: white;
+font-size: 14px;
+border-radius: 5px;
+border: none;
+}
+
+.btn-secondary {
+    text-decoration: none;
+    background-color: red;
+    padding-right: 7px;
+    padding-left: 7px;
+    font-size: 14px;
+    border-radius: 5px;
+    color: white;
+}
+
+input {
+    border-radius: 5px;
+}
+
+textarea {
+    border-radius: 5px;
+}

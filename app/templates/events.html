@@ -1,5 +1,48 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>This is the event tab</h1>
+<section id="eventDisplay">
+    <div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert">
+                        {{ message }}
+                        &nbsp;&nbsp;
+                        <button class="close-button" onclick="closeMessage(this)">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    <div class="card-container">
+        {% for event in event_data %}
+            <div class="card">
+                <div class="card-body">
+                    <h4>{{ event.title }}</h4>
+                    <div class="para">
+                        <p><strong>Start Date:</strong> {{ event.start }}</p>
+                        <p><strong>End Date:</strong> {{ event.end }}</p>
+                        <p><strong>Event Description:</strong> {{ event.description }}</p>
+                    </div>
+                    <div class="btn-group">
+                        <form action="{{ url_for('update_event', event_id=event.id) }}" method="GET">
+                            <button id="button1" type="submit" class="btn-update">Update</button>
+                        </form>
+                        <form method="GET" action="{{ url_for('delete_event', event_id=event.id) }}">
+                            <button id="button2" type="submit" class="btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+<script>
+    function closeMessage(button) {
+      button.parentElement.style.display = "none";
+    }
+  </script>
 {% endblock %}
+
+
